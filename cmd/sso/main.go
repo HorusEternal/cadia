@@ -1,6 +1,7 @@
 package main
 
 import (
+	"cadia/internal/app"
 	"cadia/internal/config"
 	"log/slog"
 	"os"
@@ -16,7 +17,10 @@ func main() {
 	cfg := config.MustLoad()
 	log := setupLogger(cfg.Env)
 
-	log.Info("Starting application", slog.String("env", cfg.Env), slog.Int("port", cfg.GRPC.Port))
+	log.Info("Starting application", slog.String("env", cfg.Env))
+
+	application := app.New(log, cfg.GRPC.Port, cfg.StoragePath, cfg.TokenTTL)
+	application.GRPCServer.MustRun()
 
 }
 
